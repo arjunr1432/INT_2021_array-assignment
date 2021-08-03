@@ -33,7 +33,8 @@ public class DatabaseBeanConfiguration {
         DBObject query = new BasicDBObject("_id", "idKey");
         DBCursor cursor = dbCollection.find(query);
         if (cursor.one() == null) {
-            DBObject arrayData = new BasicDBObject("_id", "idKey").append("data", new ArrayList<Integer>());
+            DBObject arrayData = new BasicDBObject("_id", "idKey")
+                    .append("data", new ArrayList<Integer>());
             dbCollection.insert(arrayData);
         }
     }

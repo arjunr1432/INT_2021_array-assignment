@@ -24,15 +24,22 @@ public class MongoDbRepositoryService implements RepositoryService {
     }
 
     @Override
-    public Boolean addElement(Integer element) {
+    public void addElement(Integer element) {
         DBObject query = new BasicDBObject("_id", "idKey");
         DBCursor cursor = mongoDbCollection.find(query);
-        DBObject jo = cursor.one();
-        List<Integer> dbData = (List<Integer>) jo.get("data");
+        DBObject dbObject = cursor.one();
+        List<Integer> dbData = (List<Integer>) dbObject.get("data");
         dbData.add(element);
-        jo.put("data", dbData);
-        System.out.println(dbData);
-        mongoDbCollection.save(jo);
-        return Boolean.TRUE;
+        dbObject.put("data", dbData);
+        mongoDbCollection.save(dbObject);
+    }
+
+    @Override
+    public void emptyArray() {
+        DBObject query = new BasicDBObject("_id", "idKey");
+        DBCursor cursor = mongoDbCollection.find(query);
+        DBObject dbObject = cursor.one();
+        dbObject.put("data", new ArrayList<Integer>());
+        mongoDbCollection.save(dbObject);
     }
 }

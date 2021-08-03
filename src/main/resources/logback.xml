@@ -1,0 +1,29 @@
+<configuration scan="true">
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%logger : %thread]|[Context={%X}]| %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- To be used for non-local environments to generate the logger file.-->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/erate-assignment-app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/erate-assignment-app.%d{yyyy-MM-dd_HH}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%logger : %thread] | [Context={%X}] | %msg %n</pattern>
+        </encoder>
+    </appender>
+
+	<logger name="eu.assignment" level="INFO"/>
+  	<logger name="eu.assignment.project.erate.filter.RequestResponseLoggingFilter.java" level="INFO"/>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

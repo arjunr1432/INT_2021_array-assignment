@@ -5,6 +5,7 @@ import java.util.List;
 public interface RepositoryService {
 
     public List<Integer> listArray();
-    public Boolean addElement(Integer element);
+    public void addElement(Integer element);
+    public void emptyArray();
 
 }

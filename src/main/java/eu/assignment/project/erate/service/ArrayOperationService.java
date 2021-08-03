@@ -1,70 +1,105 @@
 package eu.assignment.project.erate.service;
 
-import eu.assignment.project.erate.common.gen.api.ApiApi;
 import eu.assignment.project.erate.common.gen.api.ApiApiDelegate;
-import eu.assignment.project.erate.common.gen.api.ApiUtil;
 import eu.assignment.project.erate.common.gen.model.ArrayData;
 import eu.assignment.project.erate.common.gen.model.ArrayRequestData;
+import eu.assignment.project.erate.common.gen.model.DeleteArrayData;
 import eu.assignment.project.erate.common.gen.model.DividedArrayData;
+import eu.assignment.project.erate.exception.CustomBusinessException;
+import eu.assignment.project.erate.repository.RepositoryService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Service
 public class ArrayOperationService implements ApiApiDelegate {
 
-    default ResponseEntity<ArrayData> addToArray(ArrayRequestData arrayRequestData) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ 0, 0 ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    @Autowired
+    private RepositoryService mongoDbRepositoryService;
+
+    @Override
+    public ResponseEntity<ArrayData> addToArray(ArrayRequestData arrayRequestData) {
+        List<Integer> arrayElements = new ArrayList<Integer>();
+        try {
+            mongoDbRepositoryService.addElement(arrayRequestData.getElement());
+            arrayElements = mongoDbRepositoryService.listArray();
+        } catch (Exception e) {
+            log.error("Exception while accessing data from database.");
+            throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Exception while trying to add a new array content.");}
+        return new ResponseEntity<>(new ArrayData().data(arrayElements), HttpStatus.CREATED);
 
     }
 
-    /**
-     * GET /api/v1/subDivide : This API will check whether the array can be split in two, without reordering the elements, so that the sum of the two resulting arrays is equal.
-     *
-     * @return Successful response: contents of the Array. (status code 200)
-     *         or Unexpected error (status code 200)
-     * @see ApiApi#divideArray
-     */
-    default ResponseEntity<DividedArrayData> divideArray() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ [ 0, 0 ], [ 0, 0 ] ], \"status\" : \"status\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
+    @Override
+    public ResponseEntity<DividedArrayData> divideArray() {
+        List<List<Integer>> responseList = new ArrayList<>();
+        List<Integer> arrayElements = new ArrayList<Integer>();
+        DividedArrayData responseData = new DividedArrayData();
+        try {
+            arrayElements = mongoDbRepositoryService.listArray();
+            if (arrayElements.size() != 0) {
+                int pivot = findPivot(arrayElements);
+                if (pivot != -1) {
+                    responseList.add(arrayElements.subList(0, pivot));
+                    responseList.add(arrayElements.subList(pivot, arrayElements.size()));
+                    responseData.setData(responseList);
+                    responseData.setStatus("Successfully split in to two.");
+                } else {
+                    responseData.setStatus("Not possible to split.");
                 }
+            } else {
+                responseData.setStatus("Empty array, not possible to split.");
             }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        } catch (Exception e) {
+            log.error("Exception while accessing data from database.");
+            throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Exception while trying to spit array content."); }
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ArrayData> listArray() {
+        List<Integer> arrayElements = new ArrayList<Integer>();
+        try {
+            arrayElements = mongoDbRepositoryService.listArray();
+        } catch (Exception e) {
+            log.error("Exception while accessing data from database.");
+            throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Exception while trying to access array content.");        }
+        return new ResponseEntity<>(new ArrayData().data(arrayElements), HttpStatus.OK);
 
     }
 
-    /**
-     * GET /api/v1/list : This API will return the contents of the array.
-     *
-     * @return Successful response: contents of the Array. (status code 200)
-     *         or Unexpected error (status code 200)
-     * @see ApiApi#listArray
-     */
-    default ResponseEntity<ArrayData> listArray() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"data\" : [ 0, 0 ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    @Override
+    public ResponseEntity<DeleteArrayData> emptyArray() {
+        try {
+            mongoDbRepositoryService.emptyArray();
+        } catch (Exception e) {
+            log.error("Exception while accessing data from database.");
+            throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Exception while trying to clear array content.");
+        }
+        return new ResponseEntity<>(new DeleteArrayData().message("Array cleared successfully"), HttpStatus.OK);
 
+    }
+
+    private int findPivot(List<Integer> arrayElements) {
+        for (int i = 0; i < arrayElements.size(); i++) {
+            if (findSum(arrayElements.subList(0, i)) == findSum(arrayElements.subList(i, arrayElements.size()))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findSum(List<Integer> subList) {
+        return subList.stream().mapToInt(value -> value).sum();
     }
 }

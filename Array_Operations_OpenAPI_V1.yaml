@@ -78,6 +78,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/v1/deleteArray:
+    delete:
+      summary: 'This API will clear the existing Array.'
+      operationId: emptyArray
+      tags:
+        - Array Operations
+      responses:
+        '200':
+          description: 'Successful response: status of array deletion.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteArrayData'
 components:
   schemas:
     ArrayData:
@@ -109,9 +122,16 @@ components:
       required:
         - element
       properties:
-        data:
+        element:
           type: integer
           format: int32
+    DeleteArrayData:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
     Error:
       type: object
       required:

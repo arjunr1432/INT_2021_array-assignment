@@ -1,19 +1,14 @@
 package eu.assignment.project.erate.controller;
 
 import eu.assignment.project.erate.common.gen.api.ApiApi;
-import eu.assignment.project.erate.common.gen.model.ArrayData;
-import eu.assignment.project.erate.common.gen.model.ArrayRequestData;
-import eu.assignment.project.erate.common.gen.model.DividedArrayData;
 import eu.assignment.project.erate.common.gen.model.Error;
-import eu.assignment.project.erate.models.RequestBodyData;
-import eu.assignment.project.erate.repository.RepositoryService;
+import eu.assignment.project.erate.common.gen.model.*;
+import eu.assignment.project.erate.service.ArrayOperationService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -21,7 +16,7 @@ import javax.validation.Valid;
 public class ArrayOperationController implements ApiApi {
 
     @Autowired
-    private RepositoryService mongoDbRepositoryService;
+    private ArrayOperationService arrayOperationService;
 
     /**
      * POST /api/v1/addElement : This API will add a new element to the existing Array.
@@ -37,8 +32,7 @@ public class ArrayOperationController implements ApiApi {
     }, tags={ "Array Operations", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful response: contents of the Array after adding the new element.", response = ArrayData.class),
-            @ApiResponse(code = 400, message = "Failed response: Bad request", response = Error.class),
-            @ApiResponse(code = 200, message = "Unexpected error", response = Error.class) })
+            @ApiResponse(code = 400, message = "Failed response: Bad request", response = Error.class)})
     @PostMapping(
             value = "/api/v1/addElement",
             produces = { "application/json" },
@@ -46,7 +40,7 @@ public class ArrayOperationController implements ApiApi {
     )
     @Override
     public ResponseEntity<ArrayData> addToArray(@ApiParam(value = "Request payload for adding a new element to the existing Array." ,required=true )  @Valid @RequestBody ArrayRequestData arrayRequestData) {
-        return getDelegate().addToArray(arrayRequestData);
+        return arrayOperationService.addToArray(arrayRequestData);
     }
 
 
@@ -61,15 +55,14 @@ public class ArrayOperationController implements ApiApi {
             @Authorization(value = "BasicAuth")
     }, tags={ "Array Operations", })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful response: contents of the Array.", response = DividedArrayData.class),
-            @ApiResponse(code = 200, message = "Unexpected error", response = Error.class) })
+            @ApiResponse(code = 200, message = "Successful response: contents of the Array.", response = DividedArrayData.class)})
     @GetMapping(
             value = "/api/v1/subDivide",
             produces = { "application/json" }
     )
     @Override
     public ResponseEntity<DividedArrayData> divideArray() {
-        return getDelegate().divideArray();
+        return arrayOperationService.divideArray();
     }
 
 
@@ -84,25 +77,33 @@ public class ArrayOperationController implements ApiApi {
             @Authorization(value = "BasicAuth")
     }, tags={ "Array Operations", })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successful response: contents of the Array.", response = ArrayData.class),
-            @ApiResponse(code = 200, message = "Unexpected error", response = Error.class) })
+            @ApiResponse(code = 200, message = "Successful response: contents of the Array.", response = ArrayData.class)})
     @GetMapping(
             value = "/api/v1/list",
             produces = { "application/json" }
     )
     @Override
     public ResponseEntity<ArrayData> listArray() {
-        return getDelegate().listArray();
+        return arrayOperationService.listArray();
     }
 
-    @GetMapping(path = "/list")
-    public ResponseEntity<String> testAPI(HttpServletRequest request) {
-        return new ResponseEntity<>(mongoDbRepositoryService.listArray().toString(), HttpStatus.ACCEPTED);
+    /**
+     * DELETE /api/v1/deleteArray : This API will clear the existing Array.
+     *
+     * @return Successfull response: status of array deletion. (status code 200)
+     */
+    @ApiOperation(value = "This API will clear the existing Array.", nickname = "emptyArray", notes = "", response = DeleteArrayData.class, authorizations = {
+
+            @Authorization(value = "BasicAuth")
+    }, tags={ "Array Operations", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful response: status of array deletion.", response = DeleteArrayData.class) })
+    @DeleteMapping(
+            value = "/api/v1/deleteArray",
+            produces = { "application/json" }
+    )
+    public ResponseEntity<DeleteArrayData> emptyArray() {
+        return arrayOperationService.emptyArray();
     }
 
-    @GetMapping(path = "/addElement")
-    public ResponseEntity<String> testAPI2(HttpServletRequest request, @RequestBody RequestBodyData data) {
-        mongoDbRepositoryService.addElement(data.getData());
-        return new ResponseEntity<>("Success",HttpStatus.ACCEPTED);
-    }
 }
