@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: eRate_Assignment
+servers:
+  - url: 'http://localhost:30000/arrays'
+tags:
+  - name: "Array Operations"
+    description: "APIs to play with array elements."
+paths:
+  /api/v1/list:
+    get:
+      summary: 'This API will return the contents of the array.'
+      operationId: listArray
+      tags:
+        - Array Operations
+      responses:
+        '200':
+          description: 'Successful response: contents of the Array.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayData'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/addElement:
+    post:
+      summary: 'This API will add a new element to the existing Array.'
+      operationId: addToArray
+      tags:
+        - Array Operations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArrayRequestData'
+        description: Request payload for adding a new element to the existing Array.
+        required: true
+      responses:
+        '200':
+          description: 'Successful response: contents of the Array after adding the new element.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayData'
+        '400':
+          description: 'Failed response: Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/subDivide:
+    get:
+      summary: 'This API will check whether the array can be split in two, without reordering the elements, so that the sum of the two resulting arrays is equal.'
+      operationId: divideArray
+      tags:
+        - Array Operations
+      responses:
+        '200':
+          description: 'Successful response: contents of the Array.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DividedArrayData'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ArrayData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            type: integer
+            format: int32
+    DividedArrayData:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+              format: int32
+    ArrayRequestData:
+      type: object
+      required:
+        - element
+      properties:
+        data:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+security:
+  - BasicAuth: []
