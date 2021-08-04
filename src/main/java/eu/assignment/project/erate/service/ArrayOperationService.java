@@ -45,12 +45,23 @@ public class ArrayOperationService implements ApiApiDelegate {
         try {
             arrayElements = mongoDbRepositoryService.listArray();
             if (arrayElements.size() != 0) {
-                int pivot = findPivot(arrayElements);
-                if (pivot != -1) {
-                    responseList.add(arrayElements.subList(0, pivot));
-                    responseList.add(arrayElements.subList(pivot, arrayElements.size()));
-                    responseData.setData(responseList);
-                    responseData.setStatus("Successfully split in to two.");
+                int arraySum = findSum(arrayElements);
+                int sumThreshold = arraySum / 2;
+                boolean isSplitSuccess = false;
+                if (arraySum % 2 == 0) {
+                    for (int i = 0, sum = 0; i < arrayElements.size() && sum < sumThreshold; i++) {
+                        sum += arrayElements.get(i);
+                        if (sum == sumThreshold) {
+                            isSplitSuccess = true;
+                            responseList.add(arrayElements.subList(0, i+1));
+                            responseList.add(arrayElements.subList(i+1, arrayElements.size()));
+                            responseData.setData(responseList);
+                            responseData.setStatus("Successfully split in to two.");
+                        }
+                    }
+                    if (!isSplitSuccess) {
+                        responseData.setStatus("Not possible to split.");
+                    }
                 } else {
                     responseData.setStatus("Not possible to split.");
                 }
@@ -99,7 +110,7 @@ public class ArrayOperationService implements ApiApiDelegate {
         return -1;
     }
 
-    private int findSum(List<Integer> subList) {
-        return subList.stream().mapToInt(value -> value).sum();
+    private int findSum(List<Integer> array) {
+        return array.stream().mapToInt(value -> value).sum();
     }
 }
