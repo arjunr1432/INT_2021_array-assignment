@@ -8,7 +8,21 @@ We are developing a simple HTTP-based web site with REST API that maintains an i
 • Provides functionality to add an integer to the array
 
 • Provides functionality to check whether the array can be split in two, without reordering the elements, so that the sum of the two resulting arrays is equal. For example, array [4, 1, 1, 1, 1] can be split this way (in [4] and [1, 1, 1, 1]), while [1, 1, 5, 3] cannot be split in two arrays with equal sums.
-
+## System design
+The system design document along with the implementation algorithm can be found at below git url.
+```
+https://github.com/arjunr1432/array-assignment/blob/master/documents/02_eRateAS_System_Design_Doccument.pdf
+```
+## Open API Specification
+We have defined the API specification in Open API 3.0, and the same can be found at the below git url.
+```
+https://github.com/arjunr1432/array-assignment/blob/master/documents/03_OpenAPI_Specification_V1.yaml
+```
+## Postman Collection
+The complete API collection is added in the following git url, which you can directly import and test our APIs
+```
+https://github.com/arjunr1432/array-assignment/blob/master/documents/04_eRate.postman_collection.json
+```
 ## How to install the application:
 This is a simple spring-boot application with basic spring security.
 
@@ -30,5 +44,14 @@ mvn clean test
 ```
 mvn spring-boot:run
 ```
+OR you can get the docker image from my public repository, and start the application as mentioned in 05_eRateAS_Application_TestingFlow.pdf
+```
+https://hub.docker.com/repository/docker/arjunr1432/erate-assignment
+```
 
+## Application testing and Debugging
+Documentation on application setup and sample request response available in the below git url
+```
+https://github.com/arjunr1432/array-assignment/blob/master/documents/05_eRateAS_Application_TestingFlow.pdf
+```
 
