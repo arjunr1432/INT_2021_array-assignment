@@ -5,7 +5,7 @@ import eu.assignment.project.erate.common.gen.model.Error;
 import eu.assignment.project.erate.common.gen.model.*;
 import eu.assignment.project.erate.service.ArrayOperationService;
 import io.swagger.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +13,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/")
+@RequiredArgsConstructor
 public class ArrayOperationController implements ApiApi {
 
-    @Autowired
-    private ArrayOperationService arrayOperationService;
+    private final ArrayOperationService arrayOperationService;
 
     /**
      * POST /api/v1/addElement : This API will add a new element to the existing Array.

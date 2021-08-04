@@ -7,8 +7,8 @@ import eu.assignment.project.erate.common.gen.model.DeleteArrayData;
 import eu.assignment.project.erate.common.gen.model.DividedArrayData;
 import eu.assignment.project.erate.exception.CustomBusinessException;
 import eu.assignment.project.erate.repository.RepositoryService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ArrayOperationService implements ApiApiDelegate {
 
-    @Autowired
-    private RepositoryService mongoDbRepositoryService;
+    private final RepositoryService mongoDbRepositoryService;
 
     @Override
     public ResponseEntity<ArrayData> addToArray(ArrayRequestData arrayRequestData) {
@@ -71,7 +71,8 @@ public class ArrayOperationService implements ApiApiDelegate {
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "Exception while trying to spit array content."); }
+                    "Exception while trying to spit array content.");
+        }
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
@@ -83,7 +84,8 @@ public class ArrayOperationService implements ApiApiDelegate {
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "Exception while trying to access array content.");        }
+                    "Exception while trying to access array content.");
+        }
         return new ResponseEntity<>(new ArrayData().data(arrayElements), HttpStatus.OK);
 
     }
@@ -97,17 +99,8 @@ public class ArrayOperationService implements ApiApiDelegate {
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
                     "Exception while trying to clear array content.");
         }
-        return new ResponseEntity<>(new DeleteArrayData().message("Array cleared successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new DeleteArrayData().message("Array cleared successfully."), HttpStatus.OK);
 
-    }
-
-    private int findPivot(List<Integer> arrayElements) {
-        for (int i = 0; i < arrayElements.size(); i++) {
-            if (findSum(arrayElements.subList(0, i)) == findSum(arrayElements.subList(i, arrayElements.size()))) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private int findSum(List<Integer> array) {

@@ -4,17 +4,17 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MongoDbRepositoryService implements RepositoryService {
 
-    @Autowired
-    private DBCollection mongoDbCollection;
+    private final DBCollection mongoDbCollection;
 
     @Override
     public List<Integer> listArray() {
