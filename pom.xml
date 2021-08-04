@@ -117,7 +117,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>
-								Array_Operations_OpenAPI_V1.yaml
+								documents/03_OpenAPI_Specification_V1.yaml
 							</inputSpec>
 							<generatorName>spring</generatorName>
 							<modelPackage>eu.assignment.project.erate.common.gen.model</modelPackage>

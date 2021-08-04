@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "a9159e45-1f2d-481d-a54b-ac7bcacebcce",
+		"name": "eRate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ListData",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:30000/arrays/api/v1/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30000",
+					"path": [
+						"arrays",
+						"api",
+						"v1",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SplitArray",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:30000/arrays/api/v1/subDivide",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30000",
+					"path": [
+						"arrays",
+						"api",
+						"v1",
+						"subDivide"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddData",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"element\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:30000/arrays/api/v1/addElement",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30000",
+					"path": [
+						"arrays",
+						"api",
+						"v1",
+						"addElement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteArray",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:30000/arrays/api/v1/deleteArray",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "30000",
+					"path": [
+						"arrays",
+						"api",
+						"v1",
+						"deleteArray"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "$eC6Et",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
