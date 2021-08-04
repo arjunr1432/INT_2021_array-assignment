@@ -14,6 +14,9 @@ public class DatabaseBeanConfiguration {
     @Value("${datasource.server.url:}")
     private String serverUrl;
 
+    @Value("${datasource.server.port:27017}")
+    private int serverPort;
+
     @Value("${datasource.db.name:Examples}")
     private String databaseName;
 
@@ -22,7 +25,7 @@ public class DatabaseBeanConfiguration {
 
     @Bean
     public DBCollection mongoDbCollection() throws UnknownHostException {
-        MongoClient mongoClient = new MongoClient(serverUrl);
+        MongoClient mongoClient = new MongoClient(serverUrl, serverPort);
         DB database = mongoClient.getDB(databaseName);
         DBCollection dbCollection = database.getCollection(collectionName);
         checkAndInitializeRecordsIfRequired(dbCollection);
