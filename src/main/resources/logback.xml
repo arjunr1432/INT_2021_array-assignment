@@ -20,7 +20,7 @@
     </appender>
 
 	<logger name="eu.assignment" level="INFO"/>
-  	<logger name="eu.assignment.project.erate.filter.RequestResponseLoggingFilter.java" level="INFO"/>
+  	<logger name="eu.assignment.project.erate.filter.RequestResponseLoggingFilter" level="INFO"/>
 
     <root level="WARN">
         <appender-ref ref="CONSOLE"/>

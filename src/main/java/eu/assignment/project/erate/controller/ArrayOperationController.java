@@ -6,11 +6,13 @@ import eu.assignment.project.erate.common.gen.model.*;
 import eu.assignment.project.erate.service.ArrayOperationService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/")
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class ArrayOperationController implements ApiApi {
     )
     @Override
     public ResponseEntity<ArrayData> addToArray(@ApiParam(value = "Request payload for adding a new element to the existing Array." ,required=true )  @Valid @RequestBody ArrayRequestData arrayRequestData) {
+        log.info("Request received for adding new element to array, element={}", arrayRequestData.getElement());
         return arrayOperationService.addToArray(arrayRequestData);
     }
 
@@ -62,6 +65,7 @@ public class ArrayOperationController implements ApiApi {
     )
     @Override
     public ResponseEntity<DividedArrayData> divideArray() {
+        log.info("Request received for dividing the arrays to two.");
         return arrayOperationService.divideArray();
     }
 
@@ -84,6 +88,7 @@ public class ArrayOperationController implements ApiApi {
     )
     @Override
     public ResponseEntity<ArrayData> listArray() {
+        log.info("Request received for listing the array");
         return arrayOperationService.listArray();
     }
 
@@ -103,6 +108,7 @@ public class ArrayOperationController implements ApiApi {
             produces = { "application/json" }
     )
     public ResponseEntity<DeleteArrayData> emptyArray() {
+        log.info("Request received for deleting the array");
         return arrayOperationService.emptyArray();
     }
 

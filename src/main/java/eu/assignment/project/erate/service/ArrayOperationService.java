@@ -28,7 +28,9 @@ public class ArrayOperationService implements ApiApiDelegate {
         List<Integer> arrayElements = new ArrayList<Integer>();
         try {
             mongoDbRepositoryService.addElement(arrayRequestData.getElement());
+            log.info("Element saved to database successfully.");
             arrayElements = mongoDbRepositoryService.listArray();
+            log.info("Fetched updated array with size={}", arrayElements.size());
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
@@ -44,6 +46,7 @@ public class ArrayOperationService implements ApiApiDelegate {
         DividedArrayData responseData = new DividedArrayData();
         try {
             arrayElements = mongoDbRepositoryService.listArray();
+            log.info("Fetched array with size={}", arrayElements.size());
             if (arrayElements.size() != 0) {
                 int arraySum = findSum(arrayElements);
                 int sumThreshold = arraySum / 2;
@@ -57,16 +60,22 @@ public class ArrayOperationService implements ApiApiDelegate {
                             responseList.add(arrayElements.subList(i+1, arrayElements.size()));
                             responseData.setData(responseList);
                             responseData.setStatus("Successfully split in to two.");
+                            log.info("Array successfully split into two with array1Size={} and array2Size={}",
+                                    responseList.get(0).size(),
+                                    responseList.get(1).size());
                         }
                     }
                     if (!isSplitSuccess) {
                         responseData.setStatus("Not possible to split.");
+                        log.info("Array was not possible to split.");
                     }
                 } else {
                     responseData.setStatus("Not possible to split.");
+                    log.info("Array was not possible to split.");
                 }
             } else {
                 responseData.setStatus("Empty array, not possible to split.");
+                log.info("Empty array, not possible to split.");
             }
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
@@ -81,6 +90,7 @@ public class ArrayOperationService implements ApiApiDelegate {
         List<Integer> arrayElements = new ArrayList<Integer>();
         try {
             arrayElements = mongoDbRepositoryService.listArray();
+            log.info("Fetched array with size={}", arrayElements.size());
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
@@ -94,6 +104,7 @@ public class ArrayOperationService implements ApiApiDelegate {
     public ResponseEntity<DeleteArrayData> emptyArray() {
         try {
             mongoDbRepositoryService.emptyArray();
+            log.info("Emptied the array successfully.");
         } catch (Exception e) {
             log.error("Exception while accessing data from database.");
             throw new CustomBusinessException(HttpStatus.SERVICE_UNAVAILABLE,
